@@ -2675,53 +2675,6 @@
             margin-bottom: 8px;
         }
 
-        .popup-permission-hint {
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: var(--border-radius-sm);
-            padding: 10px 12px;
-            margin: 16px 0;
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            line-height: 1.5;
-        }
-
-        .popup-permission-hint i {
-            font-size: 0.85rem;
-            flex-shrink: 0;
-            margin-top: 2px;
-            color: var(--text-accent);
-        }
-
-        .popup-permission-result {
-            border-radius: var(--border-radius-sm);
-            padding: 10px 14px;
-            margin: 14px 0;
-            font-size: 0.85rem;
-            line-height: 1.5;
-        }
-
-        .popup-permission-result.testing {
-            color: var(--text-secondary);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .popup-permission-result.success {
-            color: #34d399;
-            background: rgba(52, 211, 153, 0.06);
-            border: 1px solid rgba(52, 211, 153, 0.15);
-        }
-
-        .popup-permission-result.blocked {
-            color: #f87171;
-            background: rgba(248, 113, 113, 0.06);
-            border: 1px solid rgba(248, 113, 113, 0.15);
-        }
-
         .popup-permission-actions {
             display: flex;
             gap: 10px;
@@ -2731,6 +2684,59 @@
 
         .popup-permission-actions .btn {
             min-width: 140px;
+        }
+
+        .popup-permission-browser-tabs {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin: 18px 0 0;
+            flex-wrap: wrap;
+        }
+
+        .popup-browser-tab {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            border-radius: var(--border-radius-sm);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .popup-browser-tab:hover {
+            background: rgba(255, 45, 85, 0.08);
+            border-color: rgba(255, 45, 85, 0.2);
+        }
+
+        .popup-browser-tab.active {
+            background: rgba(255, 45, 85, 0.12);
+            border-color: rgba(255, 45, 85, 0.3);
+            color: var(--text-accent);
+        }
+
+        .popup-browser-tab i {
+            margin-right: 4px;
+        }
+
+        .popup-browser-content {
+            margin: 14px 0;
+        }
+
+        .popup-browser-instruction {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .popup-browser-instruction p {
+            margin-bottom: 8px;
+        }
+
+        .popup-browser-instruction strong {
+            color: var(--text-primary);
         }
     </style>
 </head>
@@ -2754,26 +2760,58 @@
         </div>
     </div>
 
-    <!-- POPUP PERMISSION REQUEST -->
+    <!-- POPUP BLOCKING WARNING -->
     <div class="popup-permission-overlay" id="popup-permission-overlay">
         <div class="popup-permission-card">
             <div class="popup-permission-icon">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
-            <h3>Pop-ups zulassen</h3>
-            <p>Um Dateien herunterladen zu können, benötigt diese Seite die Erlaubnis für neue Tabs (Pop-ups).</p>
-            <div class="popup-permission-hint">
-                <i class="fa-solid fa-circle-info"></i>
-                <span>Nach dem Test: Klicken Sie oben rechts auf das Pop-up-Symbol und wählen Sie <strong>"Immer
-                        zulassen"</strong>.</span>
+            <h3>Pop-ups werden blockiert</h3>
+            <p>Ihr Browser blockiert neue Tabs/Pop-ups. Dabei können Downloads (z.B. YouTube-Videos) unterbrochen werden.</p>
+
+            <div class="popup-permission-browser-tabs">
+                <div class="popup-browser-tab active" data-browser="chrome">
+                    <i class="fa-brands fa-chrome"></i> Chrome
+                </div>
+                <div class="popup-browser-tab" data-browser="firefox">
+                    <i class="fa-brands fa-firefox"></i> Firefox
+                </div>
+                <div class="popup-browser-tab" data-browser="edge">
+                    <i class="fa-brands fa-edge"></i> Edge
+                </div>
+                <div class="popup-browser-tab" data-browser="opera">
+                    <i class="fa-brands fa-opera"></i> Opera
+                </div>
+                <div class="popup-browser-tab" data-browser="safari">
+                    <i class="fa-brands fa-safari"></i> Safari
+                </div>
             </div>
-            <div class="popup-permission-result" id="popup-permission-result" style="display:none;"></div>
+
+            <div class="popup-browser-content" id="popup-browser-content">
+                <div class="popup-browser-instruction" data-for="chrome">
+                    <p>Klicken Sie auf das <strong>Pop-up-Symbol</strong> rechts in der Adressleiste und wählen Sie <strong>"Immer zulassen"</strong>.</p>
+                    <p>Oder: Einstellungen → Datenschutz und Sicherheit → Website-Einstellungen → Pop-ups → Diese Site zulassen.</p>
+                </div>
+                <div class="popup-browser-instruction" data-for="firefox" style="display:none;">
+                    <p>Klicken Sie auf das <strong>Schild-Symbol</strong> links in der Adressleiste und entfernen Sie den Haken bei "Pop-ups blockieren".</p>
+                    <p>Oder: Einstellungen → Datenschutz & Sicherheit → Berechtigungen → Pop-ups → Ausnahmen → diese Site erlauben.</p>
+                </div>
+                <div class="popup-browser-instruction" data-for="edge" style="display:none;">
+                    <p>Klicken Sie auf das <strong>Pop-up-Symbol</strong> rechts in der Adressleiste und wählen Sie <strong>"Immer zulassen"</strong>.</p>
+                    <p>Oder: Einstellungen → Cookie und Site-Berechtigungen → Pop-ups und Weiterleitungen → diese Site zulassen.</p>
+                </div>
+                <div class="popup-browser-instruction" data-for="opera" style="display:none;">
+                    <p>Klicken Sie auf das <strong>Pop-up-Symbol</strong> rechts in der Adressleiste und wählen Sie <strong>"Immer zulassen"</strong>.</p>
+                    <p>Oder: Einstellungen → Datenschutz → Pop-ups → Diese Site ausnahmen.</p>
+                </div>
+                <div class="popup-browser-instruction" data-for="safari" style="display:none;">
+                    <p>Menüleiste → Safari → Einstellungen → Websites → Pop-up-Fenster → Diese Site auf <strong>"Erlauben"</strong> setzen.</p>
+                </div>
+            </div>
+
             <div class="popup-permission-actions">
-                <button class="btn btn-primary" id="popup-permission-allow-btn">
-                    <i class="fa-solid fa-check"></i> Pop-up-Test starten
-                </button>
-                <button class="btn btn-secondary" id="popup-permission-skip-btn">
-                    Später
+                <button class="btn btn-primary" id="popup-permission-skip-btn">
+                    <i class="fa-solid fa-check"></i> Verstanden
                 </button>
             </div>
         </div>
@@ -3610,63 +3648,25 @@
                 const overlay = document.getElementById('popup-permission-overlay');
                 if (!overlay) return;
                 overlay.classList.add('active');
-            }
 
-            function sendTestPopup() {
-                const result = document.getElementById('popup-permission-result');
-                const allowBtn = document.getElementById('popup-permission-allow-btn');
-                if (allowBtn) allowBtn.disabled = true;
-
-                if (result) {
-                    result.style.display = 'block';
-                    result.className = 'popup-permission-result testing';
-                    result.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Test-Tab wird geöffnet...';
-                }
-
-                setTimeout(() => {
-                    const testWindow = window.open('https://www.onset.de/onset/testtool/leer.jsp', '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
-
-                    if (testWindow) {
-                        setTimeout(() => {
-                            if (testWindow.closed) {
-                                if (result) {
-                                    result.className = 'popup-permission-result success';
-                                    result.innerHTML = '<i class="fa-solid fa-check-circle"></i> Pop-up funktioniert! Der neue Tab hat geöffnet. Downloads sollten jetzt funktionieren.';
-                                }
-                            } else {
-                                if (result) {
-                                    result.className = 'popup-permission-result success';
-                                    result.innerHTML = '<i class="fa-solid fa-check-circle"></i> Pop-up funktioniert! Der neue Tab ist offen. Sie können ihn schließen und hier weitermachen.';
-                                }
-                                testWindow.close();
-                            }
-                        }, 2000);
-                        localStorage.setItem('xform_popup_allowed', 'true');
-                    } else {
-                        if (result) {
-                            result.className = 'popup-permission-result blocked';
-                            result.innerHTML = '<i class="fa-solid fa-ban"></i> <strong>Pop-up wurde blockiert!</strong><br><br>' +
-                                'So beheben Sie das:<br>' +
-                                '1. Klicken Sie oben rechts auf das Pop-up-Symbol in der Adressleiste<br>' +
-                                '2. Wählen Sie "Immer zulassen" für diese Seite<br>' +
-                                '3. Klicken Sie unten erneut auf "Test starten"';
-                        }
-                        if (allowBtn) allowBtn.disabled = false;
-                    }
-                }, 1500);
+                const browserTabs = overlay.querySelectorAll('.popup-browser-tab');
+                const instructions = overlay.querySelectorAll('.popup-browser-instruction');
+                browserTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        browserTabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        const browser = tab.dataset.browser;
+                        instructions.forEach(inst => {
+                            inst.style.display = inst.dataset.for === browser ? 'block' : 'none';
+                        });
+                    });
+                });
             }
 
             setTimeout(updateBootLog, 200);
 
-            const popupAllowBtn = document.getElementById('popup-permission-allow-btn');
             const popupSkipBtn = document.getElementById('popup-permission-skip-btn');
             const popupOverlay = document.getElementById('popup-permission-overlay');
-
-            if (popupAllowBtn) {
-                popupAllowBtn.addEventListener('click', () => {
-                    sendTestPopup();
-                });
-            }
 
             if (popupSkipBtn) {
                 popupSkipBtn.addEventListener('click', () => {

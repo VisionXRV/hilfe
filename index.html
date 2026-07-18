@@ -2274,8 +2274,15 @@
         }
 
         @keyframes onlinePulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
 
         .yt-input-card {
@@ -2502,12 +2509,15 @@
             .yt-url-row {
                 flex-direction: column;
             }
+
             .yt-options-row {
                 flex-direction: column;
             }
+
             .yt-features {
                 grid-template-columns: 1fr;
             }
+
             .yt-mode-toggle {
                 flex-direction: column;
             }
@@ -2551,11 +2561,147 @@
             margin-bottom: 8px;
         }
 
-        .yt-screen-card > p {
+        .yt-screen-card>p {
             color: var(--text-secondary);
             font-size: 0.9rem;
             margin-bottom: 28px;
             line-height: 1.6;
+        }
+
+        /* ===== OFFLINE / ONLINE DIVIDER ===== */
+        .yt-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 48px 0 40px;
+        }
+
+        .yt-divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 45, 85, 0.25), transparent);
+        }
+
+        .yt-divider-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 45, 85, 0.06);
+            border: 1px dashed rgba(255, 45, 85, 0.3);
+            border-radius: 100px;
+            padding: 8px 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-accent);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            animation: badgeFloat 4s infinite ease-in-out;
+        }
+
+        .yt-divider-badge i {
+            font-size: 0.65rem;
+            animation: onlinePulse 2s infinite ease-in-out;
+        }
+    </style>
+
+    <style>
+        /* ===== POPUP PERMISSION REQUEST ===== */
+        .popup-permission-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-permission-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .popup-permission-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 36px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-permission-overlay.active .popup-permission-card {
+            transform: scale(1);
+        }
+
+        .popup-permission-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 45, 85, 0.15), rgba(196, 16, 64, 0.08));
+            border: 1px solid rgba(255, 45, 85, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .popup-permission-icon i {
+            font-size: 1.6rem;
+            color: var(--text-accent);
+        }
+
+        .popup-permission-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .popup-permission-card p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .popup-permission-card .hint {
+            font-size: 0.78rem;
+            color: var(--text-accent);
+            background: rgba(255, 45, 85, 0.06);
+            border: 1px solid rgba(255, 45, 85, 0.15);
+            border-radius: var(--border-radius-sm);
+            padding: 8px 12px;
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .popup-permission-card .hint i {
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .popup-permission-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        .popup-permission-actions .btn {
+            min-width: 140px;
         }
     </style>
 </head>
@@ -2575,6 +2721,30 @@
             <div class="loader-status-container">
                 <div class="loader-status" id="boot-status">INITIALIZING SANDBOX</div>
                 <div class="loader-diagnostics" id="boot-diagnostics">> Booting local runtime...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP PERMISSION REQUEST -->
+    <div class="popup-permission-overlay" id="popup-permission-overlay">
+        <div class="popup-permission-card">
+            <div class="popup-permission-icon">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </div>
+            <h3>Pop-ups zulassen</h3>
+            <p>Um Dateien herunterladen zu können, benötigt diese Seite Pop-ups. Bitte erlauben Sie Pop-ups in Ihrem Browser.</p>
+            <div class="hint">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>Klicken Sie oben rechts auf "Pop-ups zulassen" nach dem Test.</span>
+            </div>
+            <p style="font-size:0.82rem; color:var(--text-secondary);">Ein Test-Pop-up wird geöffnet, um die Berechtigung zu prüfen.</p>
+            <div class="popup-permission-actions">
+                <button class="btn btn-primary" id="popup-permission-allow-btn">
+                    <i class="fa-solid fa-check"></i> Erlauben &amp; Testen
+                </button>
+                <button class="btn btn-secondary" id="popup-permission-skip-btn">
+                    Später
+                </button>
             </div>
         </div>
     </div>
@@ -2626,62 +2796,6 @@
                     <p class="drop-help">Supports PNG, JPG, WEBP, MP3, WAV, MP4, ZIP, CSV, JSON and more</p>
                     <button class="btn btn-primary" id="browse-btn"><i class="fa-solid fa-folder-open"></i> Browse
                         Files</button>
-                </div>
-            </div>
-
-            <div class="yt-section">
-                <div class="yt-section-header">
-                    <h2><i class="fa-brands fa-youtube"></i> YouTube Downloader</h2>
-                    <div class="yt-online-badge">
-                        <i class="fa-solid fa-wifi"></i> Online Only
-                    </div>
-                </div>
-                <div class="yt-input-card">
-                    <div class="yt-url-row">
-                        <input type="text" class="yt-url-input" id="yt-url-input"
-                            placeholder="Paste YouTube link here... (e.g. https://www.youtube.com/watch?v=...)">
-                    </div>
-                    <div class="yt-mode-toggle">
-                        <button class="yt-mode-btn active" id="yt-mode-video" data-mode="video">
-                            <i class="fa-solid fa-video"></i> Video
-                        </button>
-                        <button class="yt-mode-btn" id="yt-mode-audio" data-mode="audio">
-                            <i class="fa-solid fa-music"></i> Audio Only
-                        </button>
-                    </div>
-                    <div class="yt-options-row" style="margin-top:16px;">
-                        <div class="select-wrapper" style="flex:1;">
-                            <select class="yt-quality-select" id="yt-quality-select">
-                                <option value="max">Best Quality (Max)</option>
-                                <option value="4320">4320p (8K)</option>
-                                <option value="2160">2160p (4K)</option>
-                                <option value="1440">1440p (2K)</option>
-                                <option value="1080" selected>1080p (Full HD)</option>
-                                <option value="720">720p (HD)</option>
-                                <option value="480">480p (SD)</option>
-                                <option value="360">360p</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down select-arrow"></i>
-                        </div>
-                        <button class="yt-download-btn" id="yt-download-btn">
-                            <i class="fa-solid fa-download"></i> Download
-                        </button>
-                    </div>
-                    <div class="yt-status" id="yt-status">
-                        <i class="fa-solid fa-circle-info"></i>
-                        <span id="yt-status-text"></span>
-                    </div>
-                    <div class="yt-features">
-                        <div class="yt-feature">
-                            <i class="fa-solid fa-bolt"></i> Complete quality
-                        </div>
-                        <div class="yt-feature">
-                            <i class="fa-solid fa-shield-halved"></i> Fast & secure
-                        </div>
-                        <div class="yt-feature">
-                            <i class="fa-solid fa-tag"></i> No watermark
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -2776,9 +2890,72 @@
 
                 </div>
             </div>
-        </section>
 
-        <!-- SCREEN 2: CONFIGURATION -->
+            <div class="yt-divider">
+                <div class="yt-divider-line"></div>
+                <div class="yt-divider-badge">
+                    <i class="fa-solid fa-wifi"></i>
+                    <span>Requires Internet</span>
+                </div>
+                <div class="yt-divider-line"></div>
+            </div>
+
+            <div class="yt-section">
+                <div class="yt-section-header">
+                    <h2><i class="fa-brands fa-youtube"></i> YouTube Downloader</h2>
+                    <div class="yt-online-badge">
+                        <i class="fa-solid fa-wifi"></i> Online Only
+                    </div>
+                </div>
+                <div class="yt-input-card">
+                    <div class="yt-url-row">
+                        <input type="text" class="yt-url-input" id="yt-url-input"
+                            placeholder="Paste YouTube link here... (e.g. https://www.youtube.com/watch?v=...)">
+                    </div>
+                    <div class="yt-mode-toggle">
+                        <button class="yt-mode-btn active" id="yt-mode-video" data-mode="video">
+                            <i class="fa-solid fa-video"></i> Video
+                        </button>
+                        <button class="yt-mode-btn" id="yt-mode-audio" data-mode="audio">
+                            <i class="fa-solid fa-music"></i> Audio Only
+                        </button>
+                    </div>
+                    <div class="yt-options-row" style="margin-top:16px;">
+                        <div class="select-wrapper" style="flex:1;">
+                            <select class="yt-quality-select" id="yt-quality-select">
+                                <option value="max">Best Quality (Max)</option>
+                                <option value="4320">4320p (8K)</option>
+                                <option value="2160">2160p (4K)</option>
+                                <option value="1440">1440p (2K)</option>
+                                <option value="1080" selected>1080p (Full HD)</option>
+                                <option value="720">720p (HD)</option>
+                                <option value="480">480p (SD)</option>
+                                <option value="360">360p</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down select-arrow"></i>
+                        </div>
+                        <button class="yt-download-btn" id="yt-download-btn">
+                            <i class="fa-solid fa-download"></i> Download
+                        </button>
+                    </div>
+                    <div class="yt-status" id="yt-status">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span id="yt-status-text"></span>
+                    </div>
+                    <div class="yt-features">
+                        <div class="yt-feature">
+                            <i class="fa-solid fa-bolt"></i> Complete quality
+                        </div>
+                        <div class="yt-feature">
+                            <i class="fa-solid fa-shield-halved"></i> Fast & secure
+                        </div>
+                        <div class="yt-feature">
+                            <i class="fa-solid fa-tag"></i> No watermark
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         <section id="screen-config" class="app-screen">
             <div class="screen-header">
                 <button class="btn-back" id="config-back-btn"><i class="fa-solid fa-arrow-left"></i> Back</button>
@@ -3265,8 +3442,10 @@
                         <i class="fa-brands fa-youtube"></i>
                     </div>
                     <h3>YOUTUBE DOWNLOADER</h3>
-                    <p>Download videos and audio from YouTube in full quality. Paste any YouTube URL on the home screen to get started.</p>
-                    <div class="yt-status info show" style="display:flex !important;justify-content:center;margin-bottom:20px;">
+                    <p>Download videos and audio from YouTube in full quality. Paste any YouTube URL on the home screen
+                        to get started.</p>
+                    <div class="yt-status info show"
+                        style="display:flex !important;justify-content:center;margin-bottom:20px;">
                         <i class="fa-solid fa-wifi"></i>
                         <span>This feature requires an internet connection</span>
                     </div>
@@ -3350,16 +3529,14 @@
         </section>
 
     </main>
-
-    <footer class="app-footer">
-        <div class="footer-container">
-            <p>&copy; 2026 XForm. Local client sandbox utilities.</p>
-            <div class="footer-links">
-                <a href="#" id="footer-about-link">Technical Specs</a>
-                <span class="sep">|</span>
-                <span class="secure-tag"><i class="fa-solid fa-lock text-accent"></i> Local Only</span>
-            </div>
+    <div class="footer-container">
+        <p>&copy; 2026 XForm. Local client sandbox utilities.</p>
+        <div class="footer-links">
+            <a href="#" id="footer-about-link">Technical Specs</a>
+            <span class="sep">|</span>
+            <span class="secure-tag"><i class="fa-solid fa-lock text-accent"></i> Local Only</span>
         </div>
+    </div>
     </footer>
 
     <!-- Libraries -->
@@ -3395,9 +3572,110 @@
                     loader.classList.add('fade-out');
                     setTimeout(() => loader.remove(), 800);
                 }
+                setTimeout(checkPopupPermission, 1000);
+            }
+
+            function checkPopupPermission() {
+                if (localStorage.getItem('xform_popup_allowed') === 'true') return;
+                const overlay = document.getElementById('popup-permission-overlay');
+                if (!overlay) return;
+                overlay.classList.add('active');
+            }
+
+            function sendTestPopup() {
+                const testWindow = window.open('', '_blank', 'width=500,height=400');
+                if (testWindow && !testWindow.closed) {
+                    testWindow.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Pop-up Test - XForm</title>
+                            <style>
+                                * { margin: 0; padding: 0; box-sizing: border-box; }
+                                body {
+                                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                                    background: #0a0a0f;
+                                    color: #e0e0e0;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    min-height: 100vh;
+                                    padding: 30px;
+                                }
+                                .card {
+                                    text-align: center;
+                                    max-width: 380px;
+                                }
+                                .icon {
+                                    width: 64px; height: 64px;
+                                    border-radius: 50%;
+                                    background: rgba(52, 211, 153, 0.12);
+                                    border: 1px solid rgba(52, 211, 153, 0.3);
+                                    display: flex; align-items: center; justify-content: center;
+                                    margin: 0 auto 20px;
+                                }
+                                .icon i { font-size: 1.8rem; color: #34d399; }
+                                h2 { font-size: 1.3rem; margin-bottom: 10px; color: #fff; }
+                                p { font-size: 0.9rem; color: #999; line-height: 1.6; margin-bottom: 6px; }
+                                .hint {
+                                    font-size: 0.82rem; color: #34d399;
+                                    background: rgba(52,211,153,0.06);
+                                    border: 1px solid rgba(52,211,153,0.2);
+                                    border-radius: 8px; padding: 10px 14px;
+                                    margin-top: 16px;
+                                }
+                                .step { font-size: 0.85rem; color: #bbb; margin-top: 12px; }
+                                .step span { color: #ff2d55; font-weight: 600; }
+                            </style>
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                        </head>
+                        <body>
+                            <div class="card">
+                                <div class="icon"><i class="fa-solid fa-check"></i></div>
+                                <h2>Pop-up funktioniert!</h2>
+                                <p>Wenn Sie diese Nachricht sehen, sind Pop-ups bereits erlaubt.</p>
+                                <p>Sie können dieses Fenster schließen.</p>
+                                <div class="hint">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    Pop-ups werden für Downloads benötigt.
+                                </div>
+                                <div class="step">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    Falls blockiert: Klicken Sie <span>oben rechts</span> auf das Pop-up-Symbol und wählen Sie <span>"Immer zulassen"</span>.
+                                </div>
+                            </div>
+                        </body>
+                        </html>
+                    `);
+                    testWindow.document.close();
+                    localStorage.setItem('xform_popup_allowed', 'true');
+                    return true;
+                }
+                return false;
             }
 
             setTimeout(updateBootLog, 200);
+
+            const popupAllowBtn = document.getElementById('popup-permission-allow-btn');
+            const popupSkipBtn = document.getElementById('popup-permission-skip-btn');
+            const popupOverlay = document.getElementById('popup-permission-overlay');
+
+            if (popupAllowBtn) {
+                popupAllowBtn.addEventListener('click', () => {
+                    const opened = sendTestPopup();
+                    popupOverlay.classList.remove('active');
+                    if (!opened) {
+                        localStorage.setItem('xform_popup_allowed', 'true');
+                    }
+                });
+            }
+
+            if (popupSkipBtn) {
+                popupSkipBtn.addEventListener('click', () => {
+                    localStorage.setItem('xform_popup_allowed', 'true');
+                    popupOverlay.classList.remove('active');
+                });
+            }
 
             function isFormatSupported(mimeType) {
                 try {
@@ -4599,7 +4877,16 @@
             const ytScreenGoHome = document.getElementById('yt-screen-go-home');
 
             let ytMode = 'video';
-            const COBALT_API = 'https://api.cobalt.tools';
+            const COBALT_INSTANCES = [
+                'https://cobaltapi.kittycat.boo',
+                'https://kitty.tame.gg',
+                'https://api.cobalt.liubquanti.click',
+                'https://rue-cobalt.xenon.zone',
+                'https://cobaltapi.cjs.nz',
+                'https://cobaltapi.squair.xyz',
+                'https://api.qwkuns.me'
+            ];
+            let COBALT_API = COBALT_INSTANCES[0];
 
             ytModeVideo.addEventListener('click', () => {
                 ytMode = 'video';
@@ -4660,120 +4947,136 @@
                 ytDownloadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
                 showYtStatus('info', 'Connecting to download service...');
 
-                try {
-                    const body = {
-                        url: url,
-                        downloadMode: ytMode === 'audio' ? 'audio' : 'auto',
-                        filenameStyle: 'pretty',
-                        disableMetadata: false
-                    };
+                const body = {
+                    url: url,
+                    downloadMode: ytMode === 'audio' ? 'audio' : 'auto',
+                    filenameStyle: 'pretty',
+                    disableMetadata: false
+                };
 
-                    if (ytMode === 'video') {
-                        body.videoQuality = ytQualitySelect.value;
-                        body.youtubeVideoCodec = 'h264';
-                    } else {
-                        body.audioFormat = 'mp3';
-                        const bitrate = ytQualitySelect.value;
-                        if (bitrate !== 'best') {
-                            body.audioBitrate = bitrate;
+                if (ytMode === 'video') {
+                    body.videoQuality = ytQualitySelect.value;
+                    body.youtubeVideoCodec = 'h264';
+                } else {
+                    body.audioFormat = 'mp3';
+                    const bitrate = ytQualitySelect.value;
+                    if (bitrate !== 'best') {
+                        body.audioBitrate = bitrate;
+                    }
+                }
+
+                let lastError = null;
+
+                for (let i = 0; i < COBALT_INSTANCES.length; i++) {
+                    const instance = COBALT_INSTANCES[i];
+                    showYtStatus('info', `Trying server ${i + 1}/${COBALT_INSTANCES.length}...`);
+
+                    try {
+                        const response = await fetch(`${instance}/`, {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(body)
+                        });
+
+                        if (response.status === 401) {
+                            lastError = 'API requires authentication';
+                            continue;
                         }
-                    }
 
-                    showYtStatus('info', 'Sending request to download service...');
+                        if (!response.ok) {
+                            lastError = `HTTP ${response.status}`;
+                            continue;
+                        }
 
-                    const response = await fetch(`${COBALT_API}/`, {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(body)
-                    });
+                        const data = await response.json();
 
-                    const data = await response.json();
+                        if (data.status === 'error') {
+                            lastError = data.error?.code || 'API error';
+                            continue;
+                        }
 
-                    if (data.status === 'error') {
-                        const errMsg = data.error?.code || 'Unknown error';
-                        showYtStatus('error', `Error: ${errMsg}. Please try again.`);
-                        ytDownloadBtn.disabled = false;
-                        ytDownloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download';
-                        return;
-                    }
+                        COBALT_API = instance;
 
-                    if (data.status === 'tunnel' || data.status === 'redirect') {
-                        showYtStatus('success', 'Download ready! Starting download...');
-                        const downloadUrl = data.url;
-                        const filename = data.filename || 'youtube_download';
+                        if (data.status === 'tunnel' || data.status === 'redirect') {
+                            showYtStatus('success', 'Download ready! Starting download...');
+                            const downloadUrl = data.url;
+                            const filename = data.filename || 'youtube_download';
 
-                        const a = document.createElement('a');
-                        a.href = downloadUrl;
-                        a.download = filename;
-                        a.target = '_blank';
-                        a.rel = 'noopener noreferrer';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
+                            const a = document.createElement('a');
+                            a.href = downloadUrl;
+                            a.download = filename;
+                            a.target = '_blank';
+                            a.rel = 'noopener noreferrer';
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
 
-                        setTimeout(() => {
-                            showYtStatus('success', `Downloaded: ${filename}`);
-                            ytDownloadBtn.disabled = false;
-                            ytDownloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download';
-                        }, 2000);
+                            setTimeout(() => {
+                                showYtStatus('success', `Downloaded: ${filename}`);
+                                ytDownloadBtn.disabled = false;
+                                ytDownloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download';
+                            }, 2000);
+                            return;
 
-                    } else if (data.status === 'picker') {
-                        showYtStatus('info', 'Multiple files found. Opening picker...');
-                        if (data.picker && data.picker.length > 0) {
-                            data.picker.forEach((item, idx) => {
+                        } else if (data.status === 'picker') {
+                            showYtStatus('info', 'Multiple files found. Downloading...');
+                            if (data.picker && data.picker.length > 0) {
+                                data.picker.forEach((item, idx) => {
+                                    setTimeout(() => {
+                                        const a = document.createElement('a');
+                                        a.href = item.url;
+                                        a.download = `download_${idx + 1}`;
+                                        a.target = '_blank';
+                                        a.rel = 'noopener noreferrer';
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        document.body.removeChild(a);
+                                    }, idx * 500);
+                                });
                                 setTimeout(() => {
+                                    showYtStatus('success', `${data.picker.length} files downloaded!`);
+                                    ytDownloadBtn.disabled = false;
+                                    ytDownloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download';
+                                }, data.picker.length * 500 + 500);
+                            }
+                            return;
+
+                        } else if (data.status === 'local-processing') {
+                            showYtStatus('info', 'Processing locally... Downloading stream...');
+                            if (data.tunnel && data.tunnel.length > 0) {
+                                for (let j = 0; j < data.tunnel.length; j++) {
                                     const a = document.createElement('a');
-                                    a.href = item.url;
-                                    a.download = `download_${idx + 1}`;
+                                    a.href = data.tunnel[j];
+                                    a.download = data.output?.filename || `stream_${j + 1}`;
                                     a.target = '_blank';
                                     a.rel = 'noopener noreferrer';
                                     document.body.appendChild(a);
                                     a.click();
                                     document.body.removeChild(a);
-                                }, idx * 500);
-                            });
-                            setTimeout(() => {
-                                showYtStatus('success', `${data.picker.length} files downloaded!`);
+                                }
+                                showYtStatus('success', 'Download started!');
                                 ytDownloadBtn.disabled = false;
                                 ytDownloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download';
-                            }, data.picker.length * 500 + 500);
-                        }
-                    } else if (data.status === 'local-processing') {
-                        showYtStatus('info', 'Processing locally... Downloading stream...');
-                        if (data.tunnel && data.tunnel.length > 0) {
-                            for (let i = 0; i < data.tunnel.length; i++) {
-                                const a = document.createElement('a');
-                                a.href = data.tunnel[i];
-                                a.download = data.output?.filename || `stream_${i + 1}`;
-                                a.target = '_blank';
-                                a.rel = 'noopener noreferrer';
-                                document.body.appendChild(a);
-                                a.click();
-                                document.body.removeChild(a);
                             }
-                            showYtStatus('success', 'Download started!');
-                            ytDownloadBtn.disabled = false;
-                            ytDownloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download';
-                        }
-                    } else {
-                        showYtStatus('error', 'Unexpected response from service. Please try again.');
-                        ytDownloadBtn.disabled = false;
-                        ytDownloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download';
-                    }
+                            return;
 
-                } catch (err) {
-                    console.error('YouTube download error:', err);
-                    if (err.name === 'TypeError' && err.message.includes('fetch')) {
-                        showYtStatus('error', 'Network error: The service might be blocked by CORS. Try again later.');
-                    } else {
-                        showYtStatus('error', `Connection failed: ${err.message}. Please try again.`);
+                        } else {
+                            lastError = 'Unexpected response';
+                            continue;
+                        }
+
+                    } catch (err) {
+                        lastError = err.message || 'Network error';
+                        continue;
                     }
-                    ytDownloadBtn.disabled = false;
-                    ytDownloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download';
                 }
+
+                showYtStatus('error', `All servers failed. Last error: ${lastError}`);
+                ytDownloadBtn.disabled = false;
+                ytDownloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download';
             });
 
             ytUrlInput.addEventListener('keydown', (e) => {

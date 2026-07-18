@@ -2732,12 +2732,14 @@
                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </div>
             <h3>Pop-ups zulassen</h3>
-            <p>Um Dateien herunterladen zu können, benötigt diese Seite Pop-ups. Bitte erlauben Sie Pop-ups in Ihrem Browser.</p>
+            <p>Um Dateien herunterladen zu können, benötigt diese Seite die Erlaubnis für Pop-ups (neue Tabs).</p>
             <div class="hint">
                 <i class="fa-solid fa-circle-info"></i>
-                <span>Klicken Sie oben rechts auf "Pop-ups zulassen" nach dem Test.</span>
+                <span>Nach dem Test: Klicken Sie oben rechts auf das Pop-up-Symbol und wählen Sie "Immer
+                    zulassen".</span>
             </div>
-            <p style="font-size:0.82rem; color:var(--text-secondary);">Ein Test-Pop-up wird geöffnet, um die Berechtigung zu prüfen.</p>
+            <p style="font-size:0.82rem; color:var(--text-secondary);">Ein Test-Tab wird geöffnet, um die Berechtigung
+                zu prüfen. Das ahmt das echte Download-Verhalten nach.</p>
             <div class="popup-permission-actions">
                 <button class="btn btn-primary" id="popup-permission-allow-btn">
                     <i class="fa-solid fa-check"></i> Erlauben &amp; Testen
@@ -3583,75 +3585,18 @@
             }
 
             function sendTestPopup() {
-                const testWindow = window.open('', '_blank', 'width=500,height=400');
-                if (testWindow && !testWindow.closed) {
-                    testWindow.document.write(`
-                        <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <title>Pop-up Test - XForm</title>
-                            <style>
-                                * { margin: 0; padding: 0; box-sizing: border-box; }
-                                body {
-                                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-                                    background: #0a0a0f;
-                                    color: #e0e0e0;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    min-height: 100vh;
-                                    padding: 30px;
-                                }
-                                .card {
-                                    text-align: center;
-                                    max-width: 380px;
-                                }
-                                .icon {
-                                    width: 64px; height: 64px;
-                                    border-radius: 50%;
-                                    background: rgba(52, 211, 153, 0.12);
-                                    border: 1px solid rgba(52, 211, 153, 0.3);
-                                    display: flex; align-items: center; justify-content: center;
-                                    margin: 0 auto 20px;
-                                }
-                                .icon i { font-size: 1.8rem; color: #34d399; }
-                                h2 { font-size: 1.3rem; margin-bottom: 10px; color: #fff; }
-                                p { font-size: 0.9rem; color: #999; line-height: 1.6; margin-bottom: 6px; }
-                                .hint {
-                                    font-size: 0.82rem; color: #34d399;
-                                    background: rgba(52,211,153,0.06);
-                                    border: 1px solid rgba(52,211,153,0.2);
-                                    border-radius: 8px; padding: 10px 14px;
-                                    margin-top: 16px;
-                                }
-                                .step { font-size: 0.85rem; color: #bbb; margin-top: 12px; }
-                                .step span { color: #ff2d55; font-weight: 600; }
-                            </style>
-                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-                        </head>
-                        <body>
-                            <div class="card">
-                                <div class="icon"><i class="fa-solid fa-check"></i></div>
-                                <h2>Pop-up funktioniert!</h2>
-                                <p>Wenn Sie diese Nachricht sehen, sind Pop-ups bereits erlaubt.</p>
-                                <p>Sie können dieses Fenster schließen.</p>
-                                <div class="hint">
-                                    <i class="fa-solid fa-circle-info"></i>
-                                    Pop-ups werden für Downloads benötigt.
-                                </div>
-                                <div class="step">
-                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                    Falls blockiert: Klicken Sie <span>oben rechts</span> auf das Pop-up-Symbol und wählen Sie <span>"Immer zulassen"</span>.
-                                </div>
-                            </div>
-                        </body>
-                        </html>
-                    `);
-                    testWindow.document.close();
-                    localStorage.setItem('xform_popup_allowed', 'true');
-                    return true;
-                }
-                return false;
+                const testPage = 'data:text/html,' + encodeURIComponent(`<!DOCTYPE html><html><head><title>XForm - Pop-up Test</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0f;color:#e0e0e0;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:30px}.card{text-align:center;max-width:400px}.icon{width:64px;height:64px;border-radius:50%;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}.icon i{font-size:1.8rem;color:#34d399}h2{font-size:1.3rem;margin-bottom:10px;color:#fff}p{font-size:.9rem;color:#999;line-height:1.6;margin-bottom:6px}.hint{font-size:.82rem;color:#34d399;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);border-radius:8px;padding:10px 14px;margin-top:16px;text-align:left}.step{font-size:.85rem;color:#bbb;margin-top:12px}.step span{color:#ff2d55;font-weight:600}</style></head><body><div class="card"><div class="icon"><i class="fa-solid fa-check"></i></div><h2>Pop-up funktioniert!</h2><p>Wenn Sie diese Nachricht sehen, sind Pop-ups (neue Tabs) bereits erlaubt.</p><p>Sie können diesen Tab schließen und zur XForm-Seite zurückkehren.</p><div class="hint"><strong>So funktioniert es:</strong><br>Beim Herunterladen öffnet XForm einen neuen Tab, der die Datei lädt und sich dann schließt. Genau das wird hier getestet.</div><div class="step">Falls blockiert: Klicken Sie <span>oben rechts</span> auf das Pop-up-Symbol und wählen Sie <span>"Immer zulassen"</span>.</div></div></body></html>`);
+
+                const link = document.createElement('a');
+                link.href = testPage;
+                link.target = '_blank';
+                link.rel = 'noopener';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                localStorage.setItem('xform_popup_allowed', 'true');
+                return true;
             }
 
             setTimeout(updateBootLog, 200);
@@ -3662,11 +3607,8 @@
 
             if (popupAllowBtn) {
                 popupAllowBtn.addEventListener('click', () => {
-                    const opened = sendTestPopup();
+                    sendTestPopup();
                     popupOverlay.classList.remove('active');
-                    if (!opened) {
-                        localStorage.setItem('xform_popup_allowed', 'true');
-                    }
                 });
             }
 
